@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arthur Temple — Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;800;900&family=Cinzel+Decorative:wght@400;700;900&family=Poiret+One&family=Jost:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+
+  /* ============================================
+     TOKENS — edit these to retune the whole palette
+     ============================================ */
+  :root{
+    --black-deep:    #0B0B0B;
+    --black-panel:   #161412;
+    --gold:          #D4AF37;
+    --gold-bright:   #E8C766;
+    --yellow:        #F4C430;
+    --bronze:        #6B5328;
+    --bronze-dark:   #3A2E10;
+    --ivory:         #F4ECDA;
+    --ivory-dim:     #B8AE94;
+
+    --font-display:  'Big Shoulders Display', 'Cinzel Decorative', sans-serif;
+    --font-accent:   'Poiret One', sans-serif;
+    --font-body:     'Jost', sans-serif;
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  html{ scroll-behavior:smooth; }
+
+  body{
+    background:var(--black-deep);
+    color:var(--ivory);
+    font-family:var(--font-body);
+    font-weight:300;
+    line-height:1.7;
+    overflow-x:hidden;
+  }
+
+  /* ============================================
+     REUSABLE MOTIFS
+     ============================================ */
+
+  /* thin gold rule with a stepped ziggurat tick in the middle */
+  .deco-divider{
+    display:flex; align-items:center; justify-content:center;
+    gap:14px; width:100%; max-width:480px; margin:0 auto;
+    color:var(--gold);
+  }
+  .deco-divider svg polygon{ fill:var(--gold); }
+  .deco-divider .line{ flex:1; height:1px; background:linear-gradient(90deg, transparent, var(--gold), transparent); }
+  .deco-divider svg{ flex-shrink:0; width:34px; height:18px; }
+
+  /* section eyebrow label */
+  .eyebrow{
+    font-family:var(--font-accent);
+    letter-spacing:0.35em;
+    text-transform:uppercase;
+    font-size:0.72rem;
+    color:var(--gold);
+    text-align:center;
+    margin-bottom:0.6rem;
+  }
+
+  h1,h2,h3{ font-family:var(--font-display); font-weight:800; letter-spacing:0.03em; }
+
+  a{ color:var(--gold); text-decoration:none; }
+
+  .container{ max-width:1100px; margin:0 auto; padding:0 6vw; }
+
+  section{ position:relative; padding:7rem 0; }
+
+  /* corner brackets — framing device echoing gallery-label / crate-corner motif */
+  .framed{ position:relative; }
+  .framed::before, .framed::after,
+  .framed .br-tl, .framed .br-br{ content:''; }
+  .corner{
+    position:absolute; width:26px; height:26px; pointer-events:none;
+  }
+  .corner.tl{ top:-1px; left:-1px; border-top:2px solid var(--gold); border-left:2px solid var(--gold); }
+  .corner.tr{ top:-1px; right:-1px; border-top:2px solid var(--gold); border-right:2px solid var(--gold); }
+  .corner.bl{ bottom:-1px; left:-1px; border-bottom:2px solid var(--gold); border-left:2px solid var(--gold); }
+  .corner.br{ bottom:-1px; right:-1px; border-bottom:2px solid var(--gold); border-right:2px solid var(--gold); }
+
+  /* ============================================
+     NAV
+     ============================================ */
+  nav{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:1.4rem 6vw;
+    background:rgba(11,11,11,0.85);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--bronze);
+    transition:padding 0.3s ease;
+  }
+  nav .brand{
+    font-family:var(--font-accent);
+    font-size:1.15rem;
+    letter-spacing:0.15em;
+    color:var(--gold-bright);
+    text-transform:uppercase;
+  }
+  nav ul{ display:flex; gap:2.2rem; list-style:none; }
+  nav ul li a{
+    font-family:var(--font-body);
+    font-size:0.82rem;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--ivory-dim);
+    transition:color 0.25s ease;
+  }
+  nav ul li a:hover{ color:var(--gold-bright); }
+
+  .nav-toggle{ display:none; background:none; border:none; color:var(--gold); font-size:1.6rem; cursor:pointer; }
+
+  /* ============================================
+     HERO
+     ============================================ */
+  .hero{
+    min-height:100vh;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center;
+    position:relative;
+    padding-top:6rem;
+  }
+
+  .sunburst-wrap{
+    position:absolute; top:50%; left:50%;
+    width:1100px; height:1100px;
+    transform:translate(-50%,-50%);
+    z-index:0; opacity:0.16;
+    animation:spin 120s linear infinite;
+  }
+  @keyframes spin{ from{ transform:translate(-50%,-50%) rotate(0deg); } to{ transform:translate(-50%,-50%) rotate(360deg); } }
+
+  .hero-content{ position:relative; z-index:1; padding:0 5vw; }
+
+  .hero .eyebrow{ font-size:1.35rem; color:var(--gold-bright); text-shadow:0 0 18px rgba(232,199,102,0.4); margin-bottom:1.4rem; opacity:0; animation:fadeUp 1s ease forwards; animation-delay:0.2s; }
+
+  .hero h1{
+    font-size:clamp(3.2rem, 9.5vw, 7.2rem);
+    color:var(--ivory);
+    text-shadow:0 0 30px rgba(212,175,55,0.25);
+    opacity:0; animation:fadeUp 1s ease forwards; animation-delay:0.4s;
+  }
+  .hero h1 span{
+    color:var(--gold-bright);
+    font-size:clamp(1rem, 2.8vw, 2rem);
+    font-weight:400;
+    letter-spacing:0.18em;
+  }
+
+  .hero .tagline{
+    font-family:var(--font-accent);
+    font-size:clamp(1rem, 2.4vw, 1.4rem);
+    color:var(--ivory-dim);
+    letter-spacing:0.08em;
+    margin-top:1.2rem;
+    opacity:0; animation:fadeUp 1s ease forwards; animation-delay:0.6s;
+  }
+
+  .hero .deco-divider{ margin-top:2.6rem; opacity:0; animation:fadeUp 1s ease forwards; animation-delay:0.8s; }
+
+  .scroll-cue{
+    position:fixed; bottom:2.5em; left:50%; transform:translateX(-50%);
+    font-family:var(--font-accent); font-size:0.7rem; letter-spacing:0.3em; text-transform:uppercase;
+    color:var(--ivory-dim);
+    display:flex; flex-direction:column; align-items:center; gap:0.5rem;
+    opacity:0; animation:fadeUp 1s ease forwards; animation-delay:1.1s;
+    z-index:2;
+  }
+  .scroll-cue .stem{ width:1px; height:30px; background:linear-gradient(var(--gold), transparent); animation:pulse 2s ease-in-out infinite; }
+  @keyframes pulse{ 0%,100%{ opacity:0.3; } 50%{ opacity:1; } }
+
+  @keyframes fadeUp{ from{ opacity:0; transform:translateY(18px); } to{ opacity:1; transform:translateY(0); } }
+
+  /* ============================================
+     LIGHTBOX
+     ============================================ */
+  .gallery-thumb img, .scroll-item img{ cursor:zoom-in; }
+  .lightbox{
+    position:fixed; inset:0; z-index:1000;
+    display:flex; align-items:center; justify-content:center;
+    background:rgba(11,11,11,0.92); backdrop-filter:blur(4px);
+    opacity:0; visibility:hidden; transition:opacity 0.3s ease, visibility 0.3s ease;
+    padding:5vh 5vw;
+  }
+  .lightbox.open{ opacity:1; visibility:visible; }
+  .lightbox img{
+    max-width:100%; max-height:90vh; object-fit:contain;
+    border:1px solid var(--bronze); box-shadow:0 0 60px rgba(0,0,0,0.7);
+    transform:scale(0.96); transition:transform 0.3s ease;
+  }
+  .lightbox.open img{ transform:scale(1); }
+  .lightbox .lb-cap{
+    position:absolute; bottom:2.2rem; left:50%; transform:translateX(-50%);
+    font-family:var(--font-accent); letter-spacing:0.06em; color:var(--ivory);
+    font-size:0.95rem; text-align:center;
+  }
+  .lightbox .lb-cap span{ display:block; color:var(--gold); font-size:0.75rem; letter-spacing:0.1em; text-transform:uppercase; margin-top:0.3rem; }
+  .lb-close{
+    position:absolute; top:1.6rem; right:1.8rem;
+    background:none; border:1px solid var(--gold); color:var(--gold);
+    width:44px; height:44px; border-radius:50%; font-size:1.4rem; line-height:1;
+    cursor:pointer; transition:background 0.25s ease, color 0.25s ease;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .lb-close:hover{ background:var(--gold); color:var(--black-deep); }
+
+  /* ============================================
+     REVEAL ON SCROLL
+     ============================================ */
+  .reveal{ opacity:0; transform:translateY(28px); transition:opacity 0.8s ease, transform 0.8s ease; }
+  .reveal.is-visible{ opacity:1; transform:translateY(0); }
+
+  /* ============================================
+     ABOUT
+     ============================================ */
+  .about{ background:var(--black-panel); border-top:1px solid var(--bronze-dark); border-bottom:1px solid var(--bronze-dark); }
+  .about-grid{
+    display:grid; grid-template-columns:0.85fr 1.15fr; gap:4.5rem; align-items:center;
+  }
+  .about-portrait{
+    aspect-ratio:4/5; background:var(--black-deep);
+    border:1px solid var(--bronze);
+    position:relative; overflow:hidden;
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--font-accent); color:var(--ivory-dim); font-size:0.85rem; letter-spacing:0.1em; text-align:center;
+  }
+  .about-portrait img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .about h2{ font-size:clamp(1.8rem, 3.4vw, 2.6rem); color:var(--gold-bright); margin-bottom:1.4rem; }
+  .about p{ color:var(--ivory-dim); margin-bottom:1.1rem; font-size:1.02rem; }
+  .about p strong{ color:var(--ivory); font-weight:500; }
+
+  /* ============================================
+     PORTFOLIO / GALLERY
+     ============================================ */
+  .work{ text-align:center; }
+  .work h2{ font-size:clamp(1.8rem, 3.4vw, 2.6rem); color:var(--gold-bright); margin:0.6rem 0 1rem; }
+  .work .lede{ max-width:560px; margin:0 auto 3.5rem; color:var(--ivory-dim); }
+
+  .gallery-grid{
+    display:grid; grid-template-columns:repeat(3, 1fr); gap:2rem;
+    text-align:center;
+    justify-items:center;
+  }
+  .gallery-item{
+    background:var(--black-panel);
+    border:1px solid var(--bronze-dark);
+    padding:1px;
+    position:relative;
+    transition:transform 0.35s ease, border-color 0.35s ease;
+  }
+  .gallery-item:hover{ transform:translateY(-6px); border-color:var(--gold); }
+  .gallery-thumb{
+    aspect-ratio:1/1;
+    background:repeating-linear-gradient(135deg, var(--black-deep) 0 14px, var(--black-panel) 14px 28px);
+    display:flex; align-items:center; justify-content:center;
+    color:var(--bronze);
+    font-family:var(--font-accent); font-size:0.8rem; letter-spacing:0.08em;
+    position:relative;
+  }
+  .gallery-thumb{ overflow:hidden; }
+  .gallery-thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .gallery-thumb .corner{ width:18px; height:18px; z-index:2; }
+  .gallery-cap{ padding:1.1rem 1.2rem 1.3rem; }
+  .gallery-cap .piece-title{ font-family:var(--font-accent); color:var(--ivory); font-size:1.02rem; letter-spacing:0.03em; margin-bottom:0.3rem; }
+  .gallery-cap .piece-meta{ font-size:0.78rem; letter-spacing:0.06em; color:var(--gold); text-transform:uppercase; }
+
+  /* ----- Woodcut & Chisel: horizontal scroll strip ----- */
+  .subcollection{ margin-top:5rem; }
+  .subcollection .sub-head{
+    display:flex; align-items:baseline; justify-content:center; gap:0.8rem;
+    margin-bottom:0.4rem;
+  }
+  .subcollection h3{
+    font-size:clamp(1.4rem, 2.6vw, 1.9rem); color:var(--gold-bright); letter-spacing:0.04em;
+  }
+  .subcollection .sub-lede{ max-width:520px; margin:0 auto 2.2rem; color:var(--ivory-dim); font-size:0.95rem; }
+  .scroll-row{
+    display:flex; gap:1.5rem; overflow-x:auto; padding:0.5rem 0.5rem 1.6rem;
+    scroll-snap-type:x mandatory; scrollbar-width:thin; scrollbar-color:var(--bronze) transparent;
+  }
+  .scroll-row::-webkit-scrollbar{ height:7px; }
+  .scroll-row::-webkit-scrollbar-thumb{ background:var(--bronze); border-radius:4px; }
+  .scroll-row::-webkit-scrollbar-track{ background:var(--bronze-dark); }
+  .scroll-item{
+    flex:0 0 auto; width:280px; scroll-snap-align:center;
+    background:var(--black-panel); border:1px solid var(--bronze-dark); padding:1px;
+    transition:transform 0.35s ease, border-color 0.35s ease;
+  }
+  .scroll-item:hover{ transform:translateY(-6px); border-color:var(--gold); }
+  .scroll-item .gallery-thumb{ aspect-ratio:3/4; }
+  .scroll-hint{
+    font-family:var(--font-accent); font-size:0.72rem; letter-spacing:0.22em; text-transform:uppercase;
+    color:var(--bronze); text-align:center; margin-top:-0.4rem;
+  }
+  @media (max-width:640px){ .scroll-item{ width:230px; } }
+
+  /* ============================================
+     EXPERIENCE / TIMELINE
+     ============================================ */
+  .experience{ background:var(--black-panel); border-top:1px solid var(--bronze-dark); border-bottom:1px solid var(--bronze-dark); }
+  .experience h2{ font-size:clamp(1.8rem, 3.4vw, 2.6rem); color:var(--gold-bright); text-align:center; margin:0.6rem 0 3.5rem; }
+
+  .timeline{ max-width:760px; margin:0 auto; position:relative; }
+  .timeline::before{
+    content:''; position:absolute; left:0; top:6px; bottom:6px; width:1px;
+    background:linear-gradient(var(--gold), var(--bronze-dark));
+  }
+  .t-item{ position:relative; padding-left:2.4rem; margin-bottom:2.6rem; }
+  .t-item:last-child{ margin-bottom:0; }
+  .t-item::before{
+    content:''; position:absolute; left:-5px; top:4px; width:11px; height:11px;
+    background:var(--black-panel); border:1px solid var(--gold); transform:rotate(45deg);
+  }
+  .t-role{ font-family:var(--font-accent); font-size:1.08rem; color:var(--ivory); }
+  .t-org{ color:var(--gold); font-size:0.85rem; letter-spacing:0.05em; text-transform:uppercase; margin:0.2rem 0 0.6rem; }
+  .t-desc{ color:var(--ivory-dim); font-size:0.96rem; max-width:560px; }
+
+  /* ============================================
+     CONTACT
+     ============================================ */
+  .contact{ text-align:center; }
+  .contact h2{ font-size:clamp(1.8rem, 3.4vw, 2.6rem); color:var(--gold-bright); margin:0.6rem 0 1.2rem; }
+  .contact p.lede{ color:var(--ivory-dim); max-width:480px; margin:0 auto 2.6rem; }
+
+  .contact-links{ display:flex; justify-content:center; gap:2.6rem; flex-wrap:wrap; margin-bottom:3rem; }
+  .contact-links a{
+    font-family:var(--font-accent); font-size:1rem; letter-spacing:0.05em;
+    border-bottom:1px solid transparent; padding-bottom:4px;
+    transition:border-color 0.25s ease;
+  }
+  .contact-links a:hover{ border-color:var(--gold); }
+
+  footer{
+    text-align:center; padding:2.4rem 0; color:var(--bronze); font-size:0.75rem; letter-spacing:0.12em;
+    border-top:1px solid var(--bronze-dark);
+  }
+
+  /* ============================================
+     RESPONSIVE
+     ============================================ */
+  @media (max-width:880px){
+    .about-grid{ grid-template-columns:1fr; gap:2.5rem; }
+    .about-portrait{ max-width:280px; margin:0 auto; }
+    .gallery-grid{ grid-template-columns:repeat(2, 1fr); }
+  }
+
+  @media (max-width:640px){
+    nav ul{
+      position:fixed; top:0; right:0; height:100vh; width:72%;
+      background:var(--black-panel); border-left:1px solid var(--bronze);
+      flex-direction:column; justify-content:center; align-items:center; gap:2.2rem;
+      transform:translateX(100%); transition:transform 0.35s ease;
+    }
+    nav ul.open{ transform:translateX(0); }
+    .nav-toggle{ display:block; }
+    .gallery-grid{ grid-template-columns:1fr; }
+    section{ padding:5rem 0; }
+    .contact-links{ gap:1.6rem; flex-direction:column; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================================
+     NAV
+     ============================================ -->
+<nav>
+  <div class="brand">Arthur Temple</div>
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">&#9776;</button>
+  <ul id="navMenu">
+    <li><a href="#about">About</a></li>
+    <li><a href="#work">Work</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ============================================
+     HERO
+     ============================================ -->
+<header class="hero">
+  <div class="sunburst-wrap" aria-hidden="true">
+    <svg viewBox="0 0 400 400" width="100%" height="100%">
+      <g stroke="#D4AF37" stroke-width="1">
+        <!-- 24 radiating lines -->
+        <g id="rays"></g>
+      </g>
+      <circle cx="200" cy="200" r="60" fill="none" stroke="#D4AF37" stroke-width="1.5"/>
+      <circle cx="200" cy="200" r="80" fill="none" stroke="#D4AF37" stroke-width="0.75"/>
+    </svg>
+  </div>
+
+  <div class="hero-content">
+    <div class="eyebrow">Art &amp; Design Portfolio</div>
+    <h1>Arthur Temple<br><span>Artist &amp; Craftsman</span></h1>
+    <p class="tagline">"Connection is the most important idea that art can give."</p>
+    <div class="deco-divider">
+      <span class="line"></span>
+      <svg viewBox="0 0 34 18"><polygon points="17,0 28,9 17,18 6,9" fill="none" stroke="#D4AF37" stroke-width="1"/></svg>
+      <span class="line"></span>
+    </div>
+  </div>
+
+  <div class="scroll-cue">
+    <span>Scroll</span>
+    <span class="stem"></span>
+  </div>
+</header>
+
+<!-- ============================================
+     ABOUT
+     ============================================ -->
+<section class="about" id="about">
+  <div class="container about-grid reveal">
+    <div class="about-portrait framed">
+      <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+      <img src="images/portrait.jpg" alt="Arthur Temple">
+    </div>
+    <div>
+      <div class="eyebrow" style="text-align:left;">About</div>
+      <h2>Artist, Craftsman &amp; Student</h2>
+      <p>I am a 20-year-old student studying at <strong>American University</strong>, interested in fine arts and business. I have spent the last few years developing my skills in <strong>art handling, framing, and hanging</strong> at and for various locations, including <strong>Mana Contemporary</strong> and <strong>The Bryne Art Gallery</strong>, as well as through volunteer and personal work.</p>
+      <p>Being from NYC, my whole life I have been surrounded by music and art, leading me to a fixated interest in these subjects. I have spent my time honing my artistic talent, specifically in <strong>woodworking and metalwork</strong>, as those are favorites among mine to work with.</p>
+      <p>What inspires me to create is the profound sense of loneliness the world would have without art. I find that all forms of art help us connect person to person in a way that not many other things can. Evoking emotion and connection is among the highest abilities for a person to make — and is what I strive for.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     WORK / PORTFOLIO
+     ============================================ -->
+<section class="work" id="work">
+  <div class="container reveal">
+    <div class="eyebrow">Selected Work</div>
+    <h2>The Gallery</h2>
+    <p class="lede">A collection of recent work spanning canvas, metal, and wood. Each piece is an experiment in form and feeling — made by hand, with attention to the material and the moment it captures.</p>
+
+    <div class="gallery-grid">
+
+      <div class="gallery-item">
+        <div class="gallery-thumb framed">
+          <span class="corner tl"></span><span class="corner br"></span>
+          <img src="images/ajax.jpg" alt="Ajax Spray Paint">
+        </div>
+        <div class="gallery-cap">
+          <div class="piece-title">Ajax</div>
+          <div class="piece-meta">Spray Paint on Canvas</div>
+        </div>
+      </div>
+
+      <div class="gallery-item">
+        <div class="gallery-thumb framed">
+          <span class="corner tl"></span><span class="corner br"></span>
+          <img src="images/god_church.jpg" alt="God Church">
+        </div>
+        <div class="gallery-cap">
+          <div class="piece-title">God Church</div>
+          <div class="piece-meta">Acrylic on Canvas</div>
+        </div>
+      </div>
+
+      <div class="gallery-item">
+        <div class="gallery-thumb framed">
+          <span class="corner tl"></span><span class="corner br"></span>
+          <img src="images/tower_full.jpg" alt="Tower of Eyes">
+        </div>
+        <div class="gallery-cap">
+          <div class="piece-title">Tower of Eyes</div>
+          <div class="piece-meta">Wood &amp; Wire Sculpture</div>
+        </div>
+      </div>
+
+      <div class="gallery-item">
+        <div class="gallery-thumb framed">
+          <span class="corner tl"></span><span class="corner br"></span>
+          <img src="images/tower_close.jpg" alt="Tower of Eyes, close up">
+        </div>
+        <div class="gallery-cap">
+          <div class="piece-title">Tower of Eyes (Detail)</div>
+          <div class="piece-meta">Wood &amp; Wire Sculpture</div>
+        </div>
+      </div>
+
+      <div class="gallery-item">
+        <div class="gallery-thumb framed">
+          <span class="corner tl"></span><span class="corner br"></span>
+          <img src="images/metal_ring_1.jpg" alt="Metal Ring">
+        </div>
+        <div class="gallery-cap">
+          <div class="piece-title">Metal Ring</div>
+          <div class="piece-meta">Mixed Media Sculpture</div>
+        </div>
+      </div>
+
+      <div class="gallery-item">
+        <div class="gallery-thumb framed">
+          <span class="corner tl"></span><span class="corner br"></span>
+          <img src="images/metal_ring_2.jpg" alt="Metal Ring, overhead view">
+        </div>
+        <div class="gallery-cap">
+          <div class="piece-title">Metal Ring (Overhead)</div>
+          <div class="piece-meta">Mixed Media Sculpture</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="subcollection">
+      <div class="sub-head">
+        <h3>Woodcut &amp; Chisel</h3>
+      </div>
+      <p class="sub-lede">Hand-carved studies in wood — figures, forms, and relief work shaped with chisel and gouge.</p>
+
+      <div class="scroll-row">
+        <div class="scroll-item">
+          <div class="gallery-thumb framed">
+            <span class="corner tl"></span><span class="corner br"></span>
+            <img src="images/woodcut_flower.jpg" alt="Carved figure and flower relief">
+          </div>
+          <div class="gallery-cap">
+            <div class="piece-title">Figure &amp; Flower</div>
+            <div class="piece-meta">Hand-Carved Wood</div>
+          </div>
+        </div>
+
+        <div class="scroll-item">
+          <div class="gallery-thumb framed">
+            <span class="corner tl"></span><span class="corner br"></span>
+            <img src="images/woodcut_dolphin.jpg" alt="Carved spoon and dolphin form">
+          </div>
+          <div class="gallery-cap">
+            <div class="piece-title">Spoon &amp; Dolphin</div>
+            <div class="piece-meta">Hand-Carved Wood</div>
+          </div>
+        </div>
+
+        <div class="scroll-item">
+          <div class="gallery-thumb framed">
+            <span class="corner tl"></span><span class="corner br"></span>
+            <img src="images/woodcut_rose.jpg" alt="Carved wooden rose ashtray">
+          </div>
+          <div class="gallery-cap">
+            <div class="piece-title">Rose Ashtray</div>
+            <div class="piece-meta">Hand-Carved Wood</div>
+          </div>
+        </div>
+      </div>
+      <p class="scroll-hint">&larr; Scroll to explore &rarr;</p>
+    </div>
+
+    <div class="subcollection">
+      <div class="sub-head">
+        <h3>Installation</h3>
+      </div>
+      <p class="sub-lede">Work seen in context — pieces installed and hung in the spaces they were made for.</p>
+
+      <div class="scroll-row">
+        <div class="scroll-item">
+          <div class="gallery-thumb framed">
+            <span class="corner tl"></span><span class="corner br"></span>
+            <img src="images/install_boats.jpg" alt="Painting installed on a wall">
+          </div>
+          <div class="gallery-cap">
+            <div class="piece-title">Boats &amp; Faces</div>
+            <div class="piece-meta">Mixed Media on Canvas, Installed</div>
+          </div>
+        </div>
+
+        <div class="scroll-item">
+          <div class="gallery-thumb framed">
+            <span class="corner tl"></span><span class="corner br"></span>
+            <img src="images/install_gallery.jpg" alt="Gallery installation in progress">
+          </div>
+          <div class="gallery-cap">
+            <div class="piece-title">Gallery Install</div>
+            <div class="piece-meta">Art Handling &amp; Hanging</div>
+          </div>
+        </div>
+
+        <div class="scroll-item">
+          <div class="gallery-thumb framed">
+            <span class="corner tl"></span><span class="corner br"></span>
+            <img src="images/install_unionstation.jpg" alt="Large-scale photographic work installed above a display">
+          </div>
+          <div class="gallery-cap">
+            <div class="piece-title">Union Station Triptych</div>
+            <div class="piece-meta">Large-Format Install</div>
+          </div>
+        </div>
+
+        <div class="scroll-item">
+          <div class="gallery-thumb framed">
+            <span class="corner tl"></span><span class="corner br"></span>
+            <img src="images/install_corner.jpg" alt="Salon-style corner hang of small works">
+          </div>
+          <div class="gallery-cap">
+            <div class="piece-title">Corner Salon Hang</div>
+            <div class="piece-meta">Small Works, Installed</div>
+          </div>
+        </div>
+      </div>
+      <p class="scroll-hint">&larr; Scroll to explore &rarr;</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     EXPERIENCE
+     ============================================ -->
+<section class="experience" id="experience">
+  <div class="container reveal">
+    <div class="eyebrow">Background</div>
+    <h2>Experience</h2>
+
+    <div class="timeline">
+
+      <div class="t-item">
+        <div class="t-role">Gallery Intern</div>
+        <div class="t-org">Bryne Gallery &middot; Washington, DC &middot; Sept 2025 – Present</div>
+        <div class="t-desc">Manage daily operations of a D.C. gallery pop-up, ensuring smooth workflow and positive visitor experience. Build relationships with artists, collectors, and corporate clients; coordinate logistics and support on-site events.</div>
+      </div>
+
+      <div class="t-item">
+        <div class="t-role">Field Marketing Agent</div>
+        <div class="t-org">WNDW Media &middot; New York, NY &middot; May 2025 – Aug 2025</div>
+        <div class="t-desc">Executed targeted marketing strategies to boost brand awareness. Built and maintained relationships with hundreds of local businesses and consistently met marketing goals on high-visibility campaigns.</div>
+      </div>
+
+      <div class="t-item">
+        <div class="t-role">Art Handler</div>
+        <div class="t-org">Mana Contemporary &middot; Jersey City, NJ &middot; June 2024 – Aug 2024</div>
+        <div class="t-desc">Catalogued, packed, and transported artwork with strict attention to safety. Assisted clients with artwork positioning and installation; handled heavy and delicate pieces following professional protocols.</div>
+      </div>
+
+      <div class="t-item">
+        <div class="t-role">Canvasser</div>
+        <div class="t-org">The Nature Conservancy &middot; Washington, DC &middot; Spring 2024</div>
+        <div class="t-desc">Raised thousands of dollars through grassroots fundraising. Advocated for environmental protection and represented the organization professionally in community outreach.</div>
+      </div>
+
+      <div class="t-item">
+        <div class="t-role">Bachelor of Science in Business Administration</div>
+        <div class="t-org">American University &middot; Washington, DC &middot; Class of 2027</div>
+        <div class="t-desc">Relevant coursework: Marketing Research, Statistics, Studio Art. Interests include the Private Equity Club, fine arts, and travel.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     CONTACT
+     ============================================ -->
+<section class="contact" id="contact">
+  <div class="container reveal">
+    <div class="eyebrow">Get In Touch</div>
+    <h2>Let's Talk</h2>
+    <p class="lede">Whether you have a commission in mind, an opportunity to share, or simply want to talk about art, I would love to hear from you. The best work begins with a conversation.</p>
+    <div class="contact-links">
+      <a href="https://www.linkedin.com/in/arthur-temple-045642300" target="_blank" rel="noopener">Connect on LinkedIn</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     LIGHTBOX
+     ============================================ -->
+<div class="lightbox" id="lightbox" aria-hidden="true">
+  <button class="lb-close" id="lbClose" aria-label="Close">&times;</button>
+  <img id="lbImg" src="" alt="">
+  <div class="lb-cap" id="lbCap"></div>
+</div>
+
+<footer>
+  &copy; <span id="year"></span> Arthur Temple. All rights reserved.
+</footer>
+
+<script>
+  // populate footer year
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // build the 24-ray sunburst programmatically
+  (function buildSunburst(){
+    const rays = document.getElementById('rays');
+    const count = 24;
+    const cx = 200, cy = 200, rInner = 85, rOuter = 195;
+    for(let i = 0; i < count; i++){
+      const angle = (i / count) * Math.PI * 2;
+      const x1 = cx + rInner * Math.cos(angle);
+      const y1 = cy + rInner * Math.sin(angle);
+      const x2 = cx + rOuter * Math.cos(angle);
+      const y2 = cy + rOuter * Math.sin(angle);
+      const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+      line.setAttribute('x1', x1.toFixed(2));
+      line.setAttribute('y1', y1.toFixed(2));
+      line.setAttribute('x2', x2.toFixed(2));
+      line.setAttribute('y2', y2.toFixed(2));
+      rays.appendChild(line);
+    }
+  })();
+
+  // mobile nav toggle
+  const navToggle = document.getElementById('navToggle');
+  const navMenu = document.getElementById('navMenu');
+  navToggle.addEventListener('click', () => navMenu.classList.toggle('open'));
+  navMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navMenu.classList.remove('open')));
+
+  // lightbox — click any gallery image to view full size
+  const lightbox = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lbImg');
+  const lbCap = document.getElementById('lbCap');
+  const lbClose = document.getElementById('lbClose');
+
+  function openLightbox(img){
+    lbImg.src = img.src;
+    lbImg.alt = img.alt;
+    const cap = img.closest('.gallery-item, .scroll-item');
+    if(cap){
+      const t = cap.querySelector('.piece-title');
+      const m = cap.querySelector('.piece-meta');
+      lbCap.innerHTML = (t ? t.textContent : '') + (m ? '<span>' + m.textContent + '</span>' : '');
+    } else { lbCap.innerHTML = ''; }
+    lightbox.classList.add('open');
+    lightbox.setAttribute('aria-hidden','false');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox(){
+    lightbox.classList.remove('open');
+    lightbox.setAttribute('aria-hidden','true');
+    document.body.style.overflow = '';
+  }
+
+  document.querySelectorAll('.gallery-thumb img, .scroll-item img').forEach(img => {
+    img.addEventListener('click', () => openLightbox(img));
+  });
+  lbClose.addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', (e) => { if(e.target === lightbox) closeLightbox(); });
+  document.addEventListener('keydown', (e) => { if(e.key === 'Escape' && lightbox.classList.contains('open')) closeLightbox(); });
+
+  // scroll-reveal using IntersectionObserver
+  const reveals = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.classList.add('is-visible');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  reveals.forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>
